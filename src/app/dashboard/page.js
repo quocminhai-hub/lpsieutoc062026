@@ -81,6 +81,14 @@ export default async function DashboardPage() {
       });
 
       courses = enrollments.map((e) => e.course).filter(Boolean);
+      // Lấy toàn bộ bài giảng của các khóa học học viên có quyền truy cập
+      lectures = courses.flatMap((c) =>
+        (c.lectures || []).map((l) => ({
+          ...l,
+          courseId: c.id,
+          course: { title: c.title }
+        }))
+      );
     }
   } catch (err) {
     console.error('Lỗi truy vấn Database trong Dashboard Page:', err);
