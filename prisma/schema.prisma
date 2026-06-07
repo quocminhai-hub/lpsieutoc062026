@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Bảng User (Học viên và Admin)
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Mật khẩu đã được băm (bcrypt)
+  name      String
+  role      String   @default("STUDENT") // "ADMIN" hoặc "STUDENT"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Quan hệ: Một học viên có thể học nhiều khóa học
+  enrollments Enrollment[]
+}
+
+// Bảng Khóa Học
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Quan hệ
+  lectures    Lecture[]
+  enrollments Enrollment[]
+}
+
+// Bảng Bài Giảng
+model Lecture {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  videoUrl    String   // Link embed YouTube
+  order       Int      @default(0) // Thứ tự bài giảng trong khóa học
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Bảng liên kết Học viên - Khóa học (Phân quyền truy cập khóa học)
+model Enrollment {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+// Bảng đăng ký chờ thanh toán từ Landing Page
+model Registration {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  phone       String
+  amount      Float    @default(1490000)
+  transferCode String   // Mã chuyển khoản duy nhất (vd: PAGEF Nam 0912345678)
+  status      String   @default("PENDING") // "PENDING", "COMPLETED", "CANCELLED"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

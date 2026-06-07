@@ -1,0 +1,78 @@
+.loginPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(18, 24, 38, 0.4) 0%, rgba(11, 15, 25, 1) 100%);
+  padding: 20px;
+}
+
+.loginCard {
+  max-width: 440px;
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+}
+
+.logoHeader {
+  font-family: var(--font-title);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.logoDot {
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--primary);
+}
+
+.loginTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: var(--text-secondary);
+}
+
+.form {
+  text-align: left;
+}
+
+.errorBox {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--error);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.backHome {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.backHome:hover {
+  color: var(--primary);
+}
