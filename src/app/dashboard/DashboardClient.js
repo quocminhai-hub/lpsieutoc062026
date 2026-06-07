@@ -395,11 +395,14 @@ export default function DashboardClient({
                 onChange={(e) => handleCourseChange(e.target.value)}
                 className={styles.courseSelector}
               >
-                {courses.map((course) => (
-                  <option key={course.id} value={course.id}>
-                    {course.title}
-                  </option>
-                ))}
+                {courses.map((course) => {
+                  const count = lectures.filter((l) => l.courseId === course.id).length;
+                  return (
+                    <option key={course.id} value={course.id}>
+                      {course.title} ({count} bài học)
+                    </option>
+                  );
+                })}
               </select>
             ) : (
               <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>Không có khóa học nào.</div>
@@ -409,7 +412,7 @@ export default function DashboardClient({
           {/* Lessons List Card */}
           <div className={styles.sidebarCard} style={{ flex: 1 }}>
             <h4 className={styles.sidebarTitle}>
-              <span>📖</span> DANH SÁCH BÀI HỌC
+              <span>📖</span> DANH SÁCH BÀI HỌC ({activeLectures.length})
             </h4>
             <div className={styles.lectureList}>
               {activeLectures.length > 0 ? (
@@ -535,37 +538,43 @@ export default function DashboardClient({
                       </thead>
                       <tbody>
                         {courses.length > 0 ? (
-                          courses.map((course, idx) => (
-                            <tr key={course.id}>
-                              <td>{idx + 1}</td>
-                              <td style={{ fontWeight: "600" }}>
-                                {course.title}
-                                {course.description && (
-                                  <div style={{ fontSize: "11px", fontWeight: "normal", color: "var(--text-muted)", marginTop: "4px" }}>
-                                    {course.description}
+                          courses.map((course, idx) => {
+                            const count = lectures.filter((l) => l.courseId === course.id).length;
+                            return (
+                              <tr key={course.id}>
+                                <td>{idx + 1}</td>
+                                <td style={{ fontWeight: "600" }}>
+                                  {course.title}
+                                  <span style={{ marginLeft: "8px", fontSize: "11px", fontWeight: "600", color: "var(--primary)", background: "rgba(255, 107, 0, 0.1)", padding: "2px 6px", borderRadius: "4px" }}>
+                                    {count} bài giảng
+                                  </span>
+                                  {course.description && (
+                                    <div style={{ fontSize: "11px", fontWeight: "normal", color: "var(--text-muted)", marginTop: "4px" }}>
+                                      {course.description}
+                                    </div>
+                                  )}
+                                </td>
+                                <td>
+                                  <div className={styles.actions}>
+                                    <button
+                                      onClick={() => handleEditCourse(course)}
+                                      className={`${styles.actionBtn} ${styles.actionEdit}`}
+                                      title="Chỉnh sửa"
+                                    >
+                                      ✏️
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteCourse(course.id)}
+                                      className={`${styles.actionBtn} ${styles.actionDelete}`}
+                                      title="Xóa"
+                                    >
+                                      🗑️
+                                    </button>
                                   </div>
-                                )}
-                              </td>
-                              <td>
-                                <div className={styles.actions}>
-                                  <button
-                                    onClick={() => handleEditCourse(course)}
-                                    className={`${styles.actionBtn} ${styles.actionEdit}`}
-                                    title="Chỉnh sửa"
-                                  >
-                                    ✏️
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteCourse(course.id)}
-                                    className={`${styles.actionBtn} ${styles.actionDelete}`}
-                                    title="Xóa"
-                                  >
-                                    🗑️
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))
+                                </td>
+                              </tr>
+                            );
+                          })
                         ) : (
                           <tr>
                             <td colSpan="3" style={{ textAlign: "center", color: "var(--text-muted)" }}>
@@ -602,11 +611,14 @@ export default function DashboardClient({
                         className={styles.courseSelector}
                         required
                       >
-                        {courses.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.title}
-                          </option>
-                        ))}
+                        {courses.map((c) => {
+                          const count = lectures.filter((l) => l.courseId === c.id).length;
+                          return (
+                            <option key={c.id} value={c.id}>
+                              {c.title} ({count} bài giảng)
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
@@ -681,7 +693,9 @@ export default function DashboardClient({
                   {/* Lectures List Table */}
                   <div className={styles.tableContainer}>
                     <div className={styles.tableHeader}>
-                      <span className={styles.tableTitle}>Danh sách bài giảng ({lectures.length})</span>
+                      <span className={styles.tableTitle}>
+                        Danh sách bài giảng thuộc khóa đang chọn ({lectures.filter(l => l.courseId === lectureForm.courseId).length})
+                      </span>
                     </div>
                     <table className={styles.adminTable}>
                       <thead>
@@ -694,14 +708,14 @@ export default function DashboardClient({
                         </tr>
                       </thead>
                       <tbody>
-                        {lectures.length > 0 ? (
-                          lectures.map((lecture, idx) => (
+                        {lectures.filter(l => l.courseId === lectureForm.courseId).length > 0 ? (
+                          lectures.filter(l => l.courseId === lectureForm.courseId).map((lecture, idx) => (
                             <tr key={lecture.id}>
                               <td>{lecture.order}</td>
-                              <td style={{ color: "var(--text-secondary)", fontWeight: "500" }}>{lecture.course?.title || "Chưa phân loại"}</td>
+                              <td style={{ color: "var(--text-secondary)", fontWeight: "500" }}>{lecture.course?.title || courses.find(c => c.id === lecture.courseId)?.title || "Chưa phân loại"}</td>
                               <td style={{ fontWeight: "600" }}>{lecture.title}</td>
                               <td style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                <a href={lecture.videoUrl} target="_blank" style={{ color: "var(--primary)", textDecoration: "underline" }}>
+                                <a href={lecture.videoUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary)", textDecoration: "underline" }}>
                                   {lecture.videoUrl}
                                 </a>
                               </td>
@@ -727,8 +741,8 @@ export default function DashboardClient({
                           ))
                         ) : (
                           <tr>
-                            <td colSpan="5" style={{ textAlign: "center", color: "var(--text-muted)" }}>
-                              Chưa có bài giảng nào được thêm.
+                            <td colSpan="5" style={{ textAlign: "center", color: "var(--text-muted)", padding: "20px" }}>
+                              Khóa học này chưa có bài giảng nào. Hãy thêm bài giảng mới ở form bên cạnh.
                             </td>
                           </tr>
                         )}
