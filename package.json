@@ -6,13 +6,14 @@
     "dev": "next dev --no-turbo",
     "build": "prisma generate && prisma db push && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.8.0",
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.10.0",
+    "dotenv": "^17.4.2",
     "googleapis": "^173.0.0",
     "jose": "^6.2.3",
     "next": "16.2.7",
