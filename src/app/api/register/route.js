@@ -43,7 +43,7 @@ export async function POST(request) {
     // Ví dụ: PAGEF Nam 0912345678
     const transferCode = `PAGEF ${lastWord} ${phone.replace(/\s+/g, '')}`;
 
-    const amount = 1490000; // Giá bán gói PRO Lifetime
+    const amount = Number(process.env.NEXT_PUBLIC_COURSE_PRICE || 1490000); // Giá bán gói PRO Lifetime
 
     // 1. Lưu đăng ký vào cơ sở dữ liệu
     const registration = await prisma.registration.create({

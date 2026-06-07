@@ -4,6 +4,13 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 
+const BANK_ID = process.env.NEXT_PUBLIC_BANK_ID || "MB";
+const BANK_NAME = process.env.NEXT_PUBLIC_BANK_NAME || "MB Bank";
+const ACCOUNT_NO = process.env.NEXT_PUBLIC_ACCOUNT_NO || "0913579509";
+const ACCOUNT_NAME = process.env.NEXT_PUBLIC_ACCOUNT_NAME || "PHU QUOC NAM";
+const COURSE_PRICE = Number(process.env.NEXT_PUBLIC_COURSE_PRICE || 1490000);
+const OLD_PRICE = Number(process.env.NEXT_PUBLIC_OLD_PRICE || 35580000);
+
 export default function Home() {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
@@ -156,8 +163,8 @@ export default function Home() {
             <div className={styles.pricingCourseName}>SADOMA AI – GÓI PRO LIFETIME</div>
             
             <div className={styles.priceWrapper}>
-              <span className={styles.oldPrice}>35.580.000đ</span>
-              <span className={styles.newPrice}>1.490.000đ</span>
+              <span className={styles.oldPrice}>{OLD_PRICE.toLocaleString('vi-VN')}đ</span>
+              <span className={styles.newPrice}>{COURSE_PRICE.toLocaleString('vi-VN')}đ</span>
             </div>
             <p className={styles.priceNote}>
               Thanh toán một lần – sở hữu trọn đời. Chỉ <strong>4.700đ / ngày</strong> trong năm đầu.
@@ -272,8 +279,8 @@ export default function Home() {
               {/* QR Image */}
               <div className={styles.qrWrapper}>
                 <img
-                  src={`https://img.vietqr.io/image/MB-0913579509-compact2.png?amount=1490000&addInfo=${encodeURIComponent(registrationData.transferCode)}&accountName=PHU%20QUOC%20NAM`}
-                  alt="VietQR MB Bank"
+                  src={`https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${registrationData.amount}&addInfo=${encodeURIComponent(registrationData.transferCode)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`}
+                  alt={`VietQR ${BANK_NAME}`}
                   className={styles.qrImage}
                 />
               </div>
@@ -282,19 +289,21 @@ export default function Home() {
               <div className={styles.bankDetails}>
                 <div className={styles.detailRow}>
                   <span className={styles.detailLabel}>Ngân hàng</span>
-                  <span className={styles.detailVal}>MB Bank</span>
+                  <span className={styles.detailVal}>{BANK_NAME}</span>
                 </div>
                 <div className={styles.detailRow}>
                   <span className={styles.detailLabel}>Số tài khoản</span>
-                  <span className={styles.detailVal} style={{ letterSpacing: "1px" }}>0913 579 509</span>
+                  <span className={styles.detailVal} style={{ letterSpacing: "1px" }}>{ACCOUNT_NO}</span>
                 </div>
                 <div className={styles.detailRow}>
                   <span className={styles.detailLabel}>Chủ tài khoản</span>
-                  <span className={styles.detailVal}>PHU QUOC NAM</span>
+                  <span className={styles.detailVal}>{ACCOUNT_NAME}</span>
                 </div>
                 <div className={styles.detailRow}>
                   <span className={styles.detailLabel}>Số tiền</span>
-                  <span className={styles.detailVal} style={{ color: "var(--primary)", fontSize: "16px", fontWeight: "800" }}>1.490.000đ</span>
+                  <span className={styles.detailVal} style={{ color: "var(--primary)", fontSize: "16px", fontWeight: "800" }}>
+                    {registrationData.amount.toLocaleString('vi-VN')}đ
+                  </span>
                 </div>
                 <div className={styles.detailRow} style={{ paddingBottom: 0 }}>
                   <span className={styles.detailLabel}>Nội dung chuyển khoản</span>
